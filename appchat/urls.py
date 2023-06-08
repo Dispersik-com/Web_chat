@@ -19,7 +19,3 @@ urlpatterns = [
     path('notifications/', NotificationsView.as_view(), name='notifications'),
     path('notifications/delete/<int:notification_id>/', delete_notification, name='delete_notification'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) # Обязательно добавить для статических файлов
-
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
