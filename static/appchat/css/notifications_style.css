@@ -1,0 +1,57 @@
+.notifications {
+  background-color: black;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 600px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px lime;
+}
+
+.notifications h2 {
+  color: lime;
+}
+
+.notifications ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.notifications li {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid lime;
+  background-color: black;
+}
+
+.notification-info p {
+  color: lime;
+  margin: 0;
+}
+
+.notification-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notification-actions a {
+  color: lime;
+  text-decoration: none;
+}
+
+.delete-form {
+  display: inline;
+}
+
+.delete-button {
+  background-color: red;
+  color: lime;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: darkred;
+}

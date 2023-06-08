@@ -1,0 +1,73 @@
+.profile {
+  background-color: black;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 700px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px lime;
+}
+
+.profile .photo img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  border: 2px solid lime;
+}
+
+.profile .photo a {
+  color: lime;
+  text-decoration: none;
+}
+
+.profile .user-info label {
+  font-size: 16px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 20px;
+  color: lime;
+}
+
+.profile .user-info input[type="text"],
+.profile .user-info input[type="file"],
+.profile .user-info textarea {
+  width: 95%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 0 5px lime;
+  background-color: black;
+  color: lime;
+}
+
+.profile .user-info button {
+  background-color: green;
+  color: lime;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.profile .user-info button:hover {
+  background-color: darkgreen;
+}
+
+.profile .friends h2 {
+  color: lime;
+}
+
+.profile .friends ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.profile .friends ul li {
+  color: lime;
+  display: inline-block;
+}
+
+.profile .registration-date p {
+  color: lime;
+}

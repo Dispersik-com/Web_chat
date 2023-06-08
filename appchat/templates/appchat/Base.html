@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static %}
+{% load my_tags %}
+
+<html lang="en">
+  <head>
+    <title>Chat App</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'appchat/css/base_style.css' %}">
+    {% block styles %}
+    {% endblock %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  </head>
+
+  <body>
+
+  <div class="header">
+    {% block header %}
+    <div class="header-element">
+          <span>Active users: {{ active_users_count }}</span>
+        </div>
+    {% endblock %}
+        <a href="{% url 'logout' %}">logout</a>
+  </div>
+
+    <div class="sidebar">
+      <ul class="sidebar-nav">
+        <li><a href="{% url 'profile' user.username %}">Profile</a></li>
+        <li><a href="{% url 'global_room' %}">Global Room</a></li>
+        <li><a href="{% url 'create_chatRoom' %}">Create Chat Room</a></li>
+        <a href="{% url 'notifications' %}">Notifications ({{ count_invite }})</a>
+      </ul>
+      <div id="chat-rooms">
+          <h2>Your chat rooms</h2>
+              <ul>
+                {% for room in rooms_of_user %}
+                  <li><a href="{{ room.get_absolute_url }}">{{room.name}} ({{room.user_count}})</a></li>
+                {% endfor %}
+              </ul>
+        </div>
+    </div>
+
+{% block content %}
+{% endblock %}
+  </body>
+</html>

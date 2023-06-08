@@ -1,0 +1,59 @@
+{% extends 'appchat/Base.html' %}
+{% load static %}
+
+{% block styles %}
+  <link rel="stylesheet" type="text/css" href="{% static 'appchat/css/profile_style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="profile">
+
+
+    <div class="user-info">
+            <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+                <div class="photo">
+                    <img src="{{ user_profile.photo.url }}" alt="User photo">
+                    <input type="file" name="photo" accept="image/*">
+                </div>
+
+            <label style="font-size: 16px; display: block; margin-bottom: 20px;">Username:</label>
+            <h5>{{ user_profile.username }}</h5>
+            <label style="font-size: 16px; display: block; margin-bottom: 20px;">Email:</label>
+            <h5>{{ user_profile.email }}</h5>
+            <label for="public-name">Public Name:</label>
+            <input type="text" id="public-name" name="public-name" value="{{ user_profile.user_public_name }}">
+            <label for="about-me">About Me:</label>
+            <textarea id="about-me" name="about-me" rows="4">{{ user_profile.about }}</textarea>
+            <p style="text-align: center;"><button type="submit">Save</button></p>
+        </form>
+    </div>
+
+    <div class="friends">
+        <h2>Friends</h2>
+        {% with user_profile.get_friends as friends %}
+            {% if friends|length <= 0 %}
+                <h5>You don't have any friends. =(</h5>
+                <h5>But you can fix it by joining any room.</h5>
+            {% else %}
+                <ul>
+                    {% for friend in friends %}
+                        <div class="photo">
+                            <img src="{% static 'appchat/image/default-user-image.png' %}" alt="User photo">
+                        </div>
+                        <li><a href="{% url 'profile' friend.username %}"> {{friend.username}} </a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="registration-date">
+        <p>Registration Date: {{ user_profile.date_sing_in }}</p>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'appchat/Base.html' %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'appchat/css/notifications_style.css' %}">
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div class="notifications">
+  <h2>Notifications</h2>
+  <ul>
+    {% for notification in notifications %}
+    <li>
+      <div class="notification-info">
+        <p><strong>From:</strong> {{ notification.user }}</p>
+        <p><strong>Date:</strong> {{ notification.timestamp }}</p>
+        <p class="expandable"><strong>Message:</strong> {{ notification.message }}</p>  <!-- Добавлен класс "expandable" -->
+      </div>
+      <div class="notification-actions">
+        <a href="{% url 'chat_room' notification.link %}">Enter Room</a>
+        <form action="{% url 'delete_notification' notification_id=notification.id %}" method="POST" class="delete-form">
+          {% csrf_token %}
+          <button type="submit" class="delete-button">Delete</button>
+        </form>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<script>
+  // Обработчик события для разворачивания/сворачивания текста при клике
+  const expandableElements = document.querySelectorAll('.expandable');
+  expandableElements.forEach(element => {
+    element.addEventListener('click', () => {
+      element.classList.toggle('expanded');
+    });
+  });
+</script>
+{% endblock %}

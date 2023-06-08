@@ -1,0 +1,21 @@
+<!-- create_room.html -->
+{% extends 'appchat/Base.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'appchat/css/forms_style.css' %}">
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <h1>Create room</h1>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="button" type="submit">Create room</button>
+        </form>
+    </div>
+{% endblock %}
