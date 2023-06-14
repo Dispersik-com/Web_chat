@@ -57,11 +57,11 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, unique=True)
     user_public_name = models.CharField(max_length=255)
     session_id = models.CharField(max_length=65)
-    photo = models.ImageField(upload_to="UserFace/", default='appchat/image/default-user-image.png')
+    photo = models.ImageField(upload_to="UserFace/", default='default/default-user-image.png')
     chat_rooms = models.ManyToManyField('ChatRoom')
     notifications = models.ManyToManyField('Notification')
     about = models.TextField()
-    friends = models.ManyToManyField('self')
+    friends = models.ManyToManyField('self', symmetrical=False)
     date_sing_in = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
@@ -92,6 +92,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     def join_chat_room(self, chat_room):
         self.chat_rooms.add(chat_room)
         chat_room.users_in_chatroom.add(self)
+        chat_room.user_count += 1
         chat_room.save()
         self.save()
 

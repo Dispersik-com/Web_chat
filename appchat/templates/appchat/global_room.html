@@ -13,7 +13,7 @@
         <div id="container-for-rooms">
                 <ul id="room-list">
                     {% for room in page_obj %}
-                        {% if room.is_private != True %}
+                        {% if room.is_private is False %}
                         <li><a href="{% url 'chat_room' room.slug %}">{{ room.name }}</a> <h5>Users: {{room.user_count}}. Time created: {{ room.time_created }}</h5></h4></li>
                         {% endif %}
                     {% endfor %}

@@ -16,9 +16,15 @@
         <div class="scrollbar">
           <ul>
               {% for user_in_room in chat_room.users_in_chatroom.all %}
-                <li>
-                    <a style="font-size: 15px; display: inline-block;" href="{% url 'profile' user_in_room.username %}">{{ user_in_room.username }}</a>
-                </li>
+                    {% if user.username == user_in_room.username %}
+                    <li>
+                        <a style="font-size: 15px; display: inline-block;" href="{% url 'profile' user.username %}">{{ user_in_room.username }}</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a style="font-size: 15px; display: inline-block;" href="{% url 'another_profile' user.username user_in_room.username %}">{{ user_in_room.username }}</a>
+                    </li>
+                    {% endif %}
               {% endfor %}
             <!-- Добавьте больше элементов по мере необходимости -->
           </ul>
@@ -41,7 +47,7 @@
     {% endfor %}
   </div>
 
-      {% in_chat_room user.username as in_room %}
+      {% in_chat_room user.username request.path as in_room %}
 
       {% if in_room is not True %}
         <form action="{% url 'join_the_room' chat_room.slug %}" method="POST">

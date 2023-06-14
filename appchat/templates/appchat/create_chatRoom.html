@@ -12,10 +12,14 @@
 {% block content %}
     <div class="form-container">
         <h1>Create room</h1>
+        {% if created %}
+        <h5>{{ Success_message }}</h5>
+        {% else %}
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
             <button class="button" type="submit">Create room</button>
         </form>
+        {% endif %}
     </div>
 {% endblock %}

@@ -1,5 +1,6 @@
 {% extends 'appchat/Base.html' %}
 {% load static %}
+{% load my_tags %}
 
 {% block styles %}
   <link rel="stylesheet" type="text/css" href="{% static 'appchat/css/profile_style.css' %}">
@@ -9,31 +10,63 @@
 
     <div class="profile">
 
-
     <div class="user-info">
+        {% if profile_another_user %}
+            <div class="photo">
+                <img src="{{ obj_another_user.photo.url }}" alt="User photo">
+            </div>
+            <div class="registration-date">
+                <p>Registration Date: {{ user.date_sing_in }}</p>
+            </div>
+
+            <label style="font-size: 16px; display: block; margin-bottom: 20px;">Username:</label>
+            <h5>{{ obj_another_user.username }}</h5>
+            <label style="font-size: 16px; display: block; margin-bottom: 20px;">Email:</label>
+            <h5>{{ obj_another_user.email }}</h5>
+            <label for="public-name">Public Name:</label>
+            <input type="text" id="public-name" name="public-name" value="{{ obj_another_user.user_public_name }}">
+            <label for="about-me">About Me:</label>
+            <textarea readonly id="about-me" name="about-me" rows="4">{{ obj_another_user.about }}</textarea>
+            {% is_friends user obj_another_user as is_friends %}
+            {% if is_friends %}
+                <p> You are friends</p>
+            {% else  %}
+            <p style="text-align: center;">
+                <a href="{% url 'add_friend' user.username obj_another_user.username %}">add to friends</a>
+            </p>
+            {% endif %}
+        {% else %}
             <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
                 <div class="photo">
-                    <img src="{{ user_profile.photo.url }}" alt="User photo">
-                    <input type="file" name="photo" accept="image/*">
+                  <label for="photo-input">
+                    <img src="{{ user.photo.url }}" alt="User photo">
+                  </label>
+                      <input id="photo-input" type="file" name="photo" accept="image/*">
+                      <p id="save-message" style="display: none;">Click "Save"</p>
                 </div>
 
+                <div class="registration-date">
+                    <p>Registration Date: {{ user.date_sing_in }}</p>
+                </div>
             <label style="font-size: 16px; display: block; margin-bottom: 20px;">Username:</label>
-            <h5>{{ user_profile.username }}</h5>
+            <h5>{{ user.username }}</h5>
             <label style="font-size: 16px; display: block; margin-bottom: 20px;">Email:</label>
-            <h5>{{ user_profile.email }}</h5>
+            <h5>{{ user.email }}</h5>
             <label for="public-name">Public Name:</label>
             <input type="text" id="public-name" name="public-name" value="{{ user_profile.user_public_name }}">
             <label for="about-me">About Me:</label>
-            <textarea id="about-me" name="about-me" rows="4">{{ user_profile.about }}</textarea>
+            <textarea id="about-me" name="about-me" rows="4">{{ user.about }}</textarea>
             <p style="text-align: center;"><button type="submit">Save</button></p>
         </form>
+        {% endif %}
     </div>
 
     <div class="friends">
         <h2>Friends</h2>
-        {% with user_profile.get_friends as friends %}
+        {% if profile_another_user %}
+            {% with obj_another_user.get_friends as friends %}
             {% if friends|length <= 0 %}
                 <h5>You don't have any friends. =(</h5>
                 <h5>But you can fix it by joining any room.</h5>
@@ -41,19 +74,55 @@
                 <ul>
                     {% for friend in friends %}
                         <div class="photo">
-                            <img src="{% static 'appchat/image/default-user-image.png' %}" alt="User photo">
+                            <img src="{{ friend.photo.url }}" alt="User photo">
                         </div>
                         <li><a href="{% url 'profile' friend.username %}"> {{friend.username}} </a></li>
                     {% endfor %}
                 </ul>
             {% endif %}
         {% endwith %}
+        {% else %}
+            {% with user.get_friends as friends %}
+                {% if friends|length <= 0 %}
+                <h5>You don't have any friends. =(</h5>
+                <h5>But you can fix it by joining any room.</h5>
+            {% else %}
+                <ul>
+                    {% for friend in friends %}
+                        <div class="photo">
+                            <img src="{{ friend.photo.url }}" alt="User photo">
+                        </div>
+                        <li><a href="{% url 'profile' friend.username %}"> {{friend.username}} </a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        {% endif %}
+
+
     </div>
 
-    <div class="registration-date">
-        <p>Registration Date: {{ user_profile.date_sing_in }}</p>
-    </div>
 
 </div>
 
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var photoInput = document.getElementById('photo-input');
+  var saveMessage = document.getElementById('save-message');
+
+  var photoImg = document.querySelector('.photo img');
+  photoImg.addEventListener('click', function() {
+    photoInput.click();
+  });
+
+  photoInput.addEventListener('change', function() {
+    if (photoInput.value) {
+      saveMessage.style.display = 'block';
+    } else {
+      saveMessage.style.display = 'none';
+    }
+  });
+});
+</script>
 {% endblock %}

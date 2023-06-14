@@ -6,14 +6,15 @@ from appchat.models import *
 register = template.Library()
 
 @register.simple_tag
-def in_chat_room(username):
-    user = UserProfile.objects.get(username=username)
-    chat_room = ChatRoom.objects.filter(users_in_chatroom=user)
-    if chat_room.exists():
-        return True
-    else:
-        return False
+def in_chat_room(username, room):
+    slug_room = room.split('/')[-2]
+    chat_room = ChatRoom.objects.get(slug=slug_room)
+    users_in_chatroom_list = list(chat_room.users_in_chatroom.all().values_list('username', flat=True))
+    return username in users_in_chatroom_list
 
 
+@register.simple_tag
+def is_friends(user, obj_another_user):
+    return user in list(obj_another_user.friends.all())
 
 

@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 # from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView, DetailView
-from django.contrib.auth import authenticate, login, get_user_model, logout
+from django.contrib.auth import logout
 from django.shortcuts import render, redirect
 from django.contrib.sessions.models import Session
 
@@ -44,17 +44,11 @@ def logout_view(request):
 class DataMixin:
     """ Класс для получения общих данных и уменьшения количества кода"""
     def get_context_data(self, **kwargs):
-        # Получить количество активных пользователей
         context = super().get_context_data(**kwargs)
+        # Получить количество активных пользователей
         active_sessions = Session.objects.filter(expire_date__gte=timezone.now())
         active_users_count = active_sessions.count()
         context['active_users_count'] = active_users_count
-        # Получить комнаты в которых состоит пользователь
-        user_name = self.request.user.username
-        user = UserProfile.objects.get(username=user_name)
-        user.chat_rooms.all()
-        context['rooms_of_user'] = user.chat_rooms.all()
-        context['count_invite'] = len(user.notifications.all())
 
         return context
 
@@ -86,9 +80,26 @@ class GlobalRoom(DataMixin, ListView):
 class ProfileDetailView(DataMixin, DetailView):
     model = UserProfile
     template_name = 'appchat/profile.html'
-    context_object_name = 'user_profile'
+    # context_object_name = 'user_profile'
     slug_url_kwarg = 'user_name'
     slug_field = 'username'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        username = self.request.user.username
+        another_username = self.request.path.split('/')[-1]
+        context['profile_another_user'] = username != another_username
+        return context
+
+    def get(self, request, *args, **kwargs):
+        # Проверка условия для переадресации
+        username = request.user.username
+        another_username = request.path.split('/')[-1]
+        if username != another_username:
+            return redirect('another_profile', user_name=username, another_username=another_username)
+
+        return super().get(request, *args, **kwargs)
+
 
     def post(self, request, *args, **kwargs):
         user = self.get_object()
@@ -105,12 +116,30 @@ class ProfileDetailView(DataMixin, DetailView):
 
         return self.get(request, *args, **kwargs)
 
-def add_friend(request, user_name, friend):
+class ProfileAnotherUserView(DataMixin, DetailView):
+    model = UserProfile
+    template_name = 'appchat/profile.html'
+    slug_url_kwarg = 'user_name'
+    slug_field = 'username'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        another_username = self.request.path.split('/')[-1]
+        context['profile_another_user'] = True
+        context['obj_another_user'] = UserProfile.objects.get(username=another_username)
+        return context
+
+
+def add_friend(request, user_name, another_username):
     user_obj = UserProfile.objects.get(username=user_name)
-    friend_obj = UserProfile.objects.get(username=friend)
-    user_obj.friends.add(friend_obj)
-    user_obj.save()
-    return redirect('profile', user_name=friend)
+    friend_obj = UserProfile.objects.get(username=another_username)
+
+    if user_obj != friend_obj:
+        user_obj.friends.add(friend_obj)
+        user_obj.save()
+
+    path = str(request.path).replace('addfriend/', '')
+    return redirect(path)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -146,17 +175,19 @@ class ChatRoomDetailView(DataMixin, DetailView):
 def create_chatRoom(request):
     form = form_manage(request, form_as=CreateRoomForm)
 
-    context = {}
+    context = {'created': False}
 
     if isinstance(form, forms.Form):
-        context = {'form': form}
+        context = {'form': form }
     elif form is True:
-        return redirect('create_chatRoom')
+        Success_message = f'The room "{request.POST.get("room_name")}" has been successfully created and added to your list of rooms.'
+        context = {'Success_message': Success_message}
+        context['created'] = True
 
     return render(request, 'appchat/create_chatRoom.html', context=context)
 
 @login_required
-@require_POST # декоратор для, который разрешает работу функции только, если метод запроса - POST
+@require_POST # декоратор, который разрешает работу функции только, если метод запроса - POST
 def join_the_room(request, room_slug):
     user = UserProfile.objects.get(username=request.user)
     room = ChatRoom.objects.get(slug=room_slug)
@@ -184,16 +215,16 @@ def leave_room(request, room_slug):
     user.leave_chat_room(chat_room)
     count_user = chat_room.user_count - 1
     if count_user <= 0:
-        # Delete all the messages associated with the chat room
+        # Удаляем все сообщения которые ассоциируются в этой чат-комнатой
         chat_room.messages.all().delete()
-        # Delete the chat room object
+        # Удаляем запись из таблицы о комнате
         chat_room.delete()
     else:
         chat_room.user_count = count_user
 
     chat_room.save()
 
-    return redirect('profile')
+    return redirect('profile', user_name=request.user.username)
 
 # Обработка 404, обязательно добавить ссылку на функцию в urls.py
 def pageNotFound(request, exception):

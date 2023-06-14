@@ -8,6 +8,9 @@
   </head>
   <body>
   <div class="form-container">
+    <div class="error-message">
+      <p>{{ form.error}}</p>
+    </div>
     <form method="POST">
       {% csrf_token %}
       <h1>Регистрация</h1>

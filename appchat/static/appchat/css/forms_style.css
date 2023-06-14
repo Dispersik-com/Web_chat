@@ -82,3 +82,11 @@ button:hover {
   background-color: #FF0000;
   cursor: pointer;
 }
+
+.errorlist {
+  color: white;
+}
+
+.errorlist ul li{
+    color: white;
+}
