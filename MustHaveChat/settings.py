@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-ym-!s0r2r1pxo3g*1m#k1fgvq@8_gmf%t%%0h5d@#+#cg$^um1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.102']
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
 
@@ -36,9 +37,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
-    'appchat.apps.AppchatConfig'
+    # 'debug_toolbar',
+    'rest_framework',
+    'channels',
+    'appchat.apps.AppchatConfig',
 ]
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -48,15 +57,22 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     # 'appchat.middleware.MiddlewareClass',
 ]
 
 INTERNAL_IPS = [
-
     '127.0.0.1',
-
+    # '192.168.0.102',
 ]
+
+# Для сохранения кэша на сервере
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'Webchat_cache'),
+    }
+}
 
 ROOT_URLCONF = 'MustHaveChat.urls'
 
@@ -77,7 +93,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'MustHaveChat.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -114,7 +129,6 @@ AUTH_USER_MODEL = 'appchat.UserProfile'
 LOGIN_URL = '/login/' # Имя url для авторизации
 
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -143,3 +157,10 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer', # Закомментировать, чтоб получать сырые данные
+    ]
+}

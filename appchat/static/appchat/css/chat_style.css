@@ -7,23 +7,23 @@
   align-items: center;
   justify-content: center;
   height: 90vh;
-  background-color: #000000;
+  background-color: #333;
 }
 
 .chat {
-  border: 2px solid #00FF00;
+  border: 1px solid black;
   border-radius: 10px;
   padding: 30px;
-  background-color: #000000;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+  background-color: #333;
+  box-shadow: 0px 0px 20px rgba(0, 200, 200, 0.9);
   width: 100%;
   height: 100%;
   overflow-y: auto;
   margin-bottom: 20px;
-  scrollbar-color: #9932cc #00FF00;
+  scrollbar-color: #FFFF00 #00FF00;
   scrollbar-width: thin;
   scroll-behavior: smooth;
-  font-color: green;
+  color: #FFFF00;
   display: flex;
   flex-direction: column;
 }
@@ -33,29 +33,20 @@
 }
 
 .chat::-webkit-scrollbar-thumb {
-  background-color: #00ff00;
+  background-color: #FFFF00;
   border-radius: 10px;
   margin-left: 2px;
 }
+
 .message-bubble {
-  background-color: white;
+  background-color: #f5f5f5;
   border-radius: 10px;
   color: #000000;
   font-size: 16px;
   margin: 10px 0;
   padding: 10px 20px;
-  max-width: 60%; /* Можно настроить ширину пузырька по вашему усмотрению */
-  max-height: 10%;
-}
-
-.message-info {
-  display: flex;
-  align-items: center;
-}
-
-.user-name {
-  font-weight: bold;
-  margin-right: 5px;
+  max-width: 60%;
+  box-shadow: 0px 0px 10px rgba(0, 0, 20, 1);
 }
 
 .message-bubble.left {
@@ -64,6 +55,11 @@
 
 .message-bubble.right {
   align-self: flex-end;
+}
+
+.message-info {
+  display: flex;
+  align-items: center;
 }
 
 .user-avatar {
@@ -77,7 +73,7 @@
 
 .user-name {
   font-weight: bold;
-  order: 1;
+  margin-right: 5px;
 }
 
 .input-container {
@@ -96,16 +92,17 @@
 }
 
 .message-input {
-  resize: none;
   border: none;
   outline: none;
   padding: 2px;
   font-size: 16px;
-  background-color: #000000;
-  color: #00FF00;
+  background-color: #f5f5f5;
+  color: black;
   border-radius: 5px;
   margin-bottom: 2px;
   width: 600px;
+  max-height: 500px; /* Добавлено свойство max-height */
+  resize: none;
 }
 
 .send-button {
@@ -113,15 +110,15 @@
   outline: none;
   padding: 10px;
   font-size: 16px;
-  background-color: #00FF00;
+  background-color: #FFFF00;
   color: #000000;
   border-radius: 1px;
   cursor: pointer;
 }
 
 .send-button:hover {
-  background-color: black;
-  color: white;
+  background-color: white;
+  color: black;
 }
 
 .dropdown {
@@ -130,16 +127,17 @@
   right: 0;
   transform: translateY(-0%);
   width: 13%;
-  background-color: #000;
-  color: lime;
+  background-color: #333;
+  color: yellow;
   font-family: monospace;
 }
 
 .dropdown-toggle {
+  border: 2px solid yellow;
+  border-radius: 10px;
   padding: 10px;
   background-color: #333;
-  color: lime;
-  border: none;
+  color: yellow;
   cursor: pointer;
 }
 
@@ -156,7 +154,7 @@
 }
 
 .dropdown-menu::-webkit-scrollbar-thumb {
-  background-color: #00ff00;
+  background-color: #333;
   border-radius: 10px;
 }
 
@@ -174,4 +172,3 @@
 .scrollbar ul li:last-child {
   border-bottom: none;
 }
-

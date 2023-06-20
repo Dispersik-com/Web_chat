@@ -3,14 +3,15 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from .form import LoginFormView
+from django.views.decorators.cache import cache_page
 
 urlpatterns = [
     path('', index, name='index'),
     path('sing_up/', sing_up_view, name='sing_up'),
     path('login/', LoginFormView.as_view(), name='login'),
     path('logout/', logout_view, name='logout'),
-    path('profile/<slug:user_name>', ProfileDetailView.as_view(), name='profile'),
-    path('profile/<slug:user_name>/<slug:another_username>', ProfileAnotherUserView.as_view(), name='another_profile'),
+    path('profile/<slug:user_name>', cache_page(60*3)(ProfileDetailView.as_view()), name='profile'),
+    path('profile/<slug:user_name>/<slug:another_username>', cache_page(60*3)(ProfileAnotherUserView.as_view()), name='another_profile'),
     path('profile/addfriend/<slug:user_name>/<slug:another_username>', add_friend, name='add_friend'),
     path('chat_room/<slug:room_slug>/', ChatRoomDetailView.as_view(), name='chat_room'),
     path('chat_room/join/<slug:room_slug>/', join_the_room, name='join_the_room'),

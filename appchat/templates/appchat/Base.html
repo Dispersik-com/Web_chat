@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
 {% load my_tags %}
+{% load cache %}
 
 <html lang="en">
   <head>
@@ -14,25 +15,33 @@
   </head>
 
   <body>
-
   <div class="header">
     {% block header %}
-    <div class="header-element">
+        <div class="header-element">
+            {% cache 60 header %}
           <span>Active users: {{ active_users_count }}</span>
+            {% endcache %}
         </div>
     {% endblock %}
         <a href="{% url 'logout' %}">logout</a>
   </div>
+
 
     <div class="sidebar">
       <ul class="sidebar-nav">
         <li><a href="{% url 'profile' user.username %}">Profile</a></li>
         <li><a href="{% url 'global_room' %}">Global Room</a></li>
         <li><a href="{% url 'create_chatRoom' %}">Create Chat Room</a></li>
-        <a href="{% url 'notifications' %}">Notifications ({{ count_invite }})</a>
+        {% with user.get_notifications|length as notifications %}
+        <a href="{% url 'notifications' %}">Notifications
+          {% if notifications > 0 %}
+              ({{ notifications }})
+          {% endif %}
+        </a>
+        {% endwith %}
+          <h2>Your chat rooms</h2>
       </ul>
       <div id="chat-rooms">
-          <h2>Your chat rooms</h2>
               <ul>
                 {% for room in user.chat_rooms.all %}
                   <li><a href="{{ room.get_absolute_url }}">{{room.name}} ({{room.user_count}})</a></li>

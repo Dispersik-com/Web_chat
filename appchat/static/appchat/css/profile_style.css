@@ -1,10 +1,11 @@
 .profile {
-  background-color: black;
+  background-color: #333;
+  color: #ff9900;
   padding: 20px;
   margin: 20px auto;
   max-width: 700px;
   border-radius: 10px;
-  box-shadow: 0 0 10px lime;
+  box-shadow: 0px 0px 20px rgba(0, 200, 200, 0.9);
 }
 
 
@@ -13,7 +14,7 @@
   font-weight: bold;
   display: block;
   margin-bottom: 20px;
-  color: lime;
+  color: #FFFF00;
 }
 
 .profile .user-info input[type="text"],
@@ -24,14 +25,14 @@
   margin-bottom: 10px;
   border: none;
   border-radius: 5px;
-  box-shadow: 0 0 5px lime;
-  background-color: black;
-  color: lime;
+  box-shadow: 0px 0px 10px rgba(0, 200, 200, 0.9);
+  background-color: #333;
+  color: white;
 }
 
 .profile .user-info button {
-  background-color: green;
-  color: lime;
+  background-color: #FFFF00;
+  color: black;
   padding: 10px;
   border: none;
   border-radius: 5px;
@@ -41,25 +42,30 @@
 }
 
 .profile .user-info button:hover {
-  background-color: darkgreen;
+  background-color: white;
 }
 
-.profile .friends h2 {
-  color: lime;
+.profile .friends {
+  overflow-x: auto;
+  white-space: nowrap;
+  color: #FFFF00;
 }
 
 .profile .friends ul {
   list-style-type: none;
   padding: 0;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .profile .friends ul li {
-  color: lime;
   display: inline-block;
+  color: #FFFF00;
+  margin-right: 10px;
 }
 
 .profile .registration-date p {
-  color: lime;
+  color: #ff9900;
 }
 
 .photo img {
@@ -67,7 +73,7 @@
   height: 20%;
   border-radius: 50%;
   margin-bottom: 20px;
-  border: 2px solid lime;
+  border: 2px solid #FFFF00;
 }
 
 .photo p {
@@ -93,5 +99,5 @@
 
 #save-message {
   margin-top: 10px;
-  color: #00FF00;
+  color: #FFFF00;
 }

@@ -13,18 +13,29 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from MustHaveChat import settings
-from appchat.views import pageNotFound
+from appchat.views import page_not_found, error_500_view
+
+# My API
+from appchat.api import *
+from .routing import websocket_urlpatterns
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('appchat.urls'))
+    path('', include('appchat.urls')),
+    path('api/v1/ChatRooms/List', ChatRoomsListCreate.as_view()),
+    path('api/v1/ChatRooms/room/<slug:chatRoom_slug>', ChatRoomsListCreate.as_view()),
+    path('api/v1/ChatRooms/room/send/<slug:chatRoom_slug>', ChatRoomsListCreate.as_view()),
+    path('api/v1/ChatRooms/room/delete/<slug:slug>', ChatRoomsDelete.as_view()),
+    path('', include('django.contrib.auth.urls')),
+    *websocket_urlpatterns,
+
 ]
-
-
 
 if settings.DEBUG:
     import debug_toolbar
@@ -35,4 +46,6 @@ if settings.DEBUG:
 
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-handler404 = pageNotFound
+handler404 = page_not_found
+
+handler500 = error_500_view

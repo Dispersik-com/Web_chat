@@ -55,7 +55,7 @@
             <label style="font-size: 16px; display: block; margin-bottom: 20px;">Email:</label>
             <h5>{{ user.email }}</h5>
             <label for="public-name">Public Name:</label>
-            <input type="text" id="public-name" name="public-name" value="{{ user_profile.user_public_name }}">
+            <input type="text" id="public-name" name="public-name" value="{{ user.user_public_name }}">
             <label for="about-me">About Me:</label>
             <textarea id="about-me" name="about-me" rows="4">{{ user.about }}</textarea>
             <p style="text-align: center;"><button type="submit">Save</button></p>
@@ -98,8 +98,6 @@
             {% endif %}
         {% endwith %}
         {% endif %}
-
-
     </div>
 
 

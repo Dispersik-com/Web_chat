@@ -3,14 +3,13 @@ from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django import forms
 from .models import *
 import hashlib
 import time
-
 class LoginFormView(LoginView):
     template_name = 'appchat/login.html'
     form_class = AuthenticationForm
@@ -25,13 +24,17 @@ class LoginFormView(LoginView):
             return redirect(reverse_lazy('profile', kwargs={'user_name': self.request.user.username}))
 
 
-class sing_up_form(forms.Form):
+class SingUpForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+
+
     username = forms.CharField(label='Login', max_length=255)
     email = forms.CharField(label='Email', max_length=255)
     password = forms.CharField(label='Password (first)', max_length=40)
     password_valid = forms.CharField(label='Password (valid)', max_length=40)
-
-    new_user = {}
 
     def clean(self):
         cleaned_data = super().clean()
@@ -39,10 +42,6 @@ class sing_up_form(forms.Form):
         password_valid = cleaned_data.get('password_valid')
         username = cleaned_data.get('username')
         email = cleaned_data.get('email')
-
-        self.new_user['username'] = username
-        self.new_user['email'] = email
-        self.new_user['password'] = password
 
         if UserProfile.objects.filter(Q(username=username) | Q(email=email)).exists():
             raise forms.ValidationError('This mail or username is already taken')
@@ -53,18 +52,25 @@ class sing_up_form(forms.Form):
         if len(password) < 8:
             raise forms.ValidationError("Passwords must be 8 characters or more")
 
+        return cleaned_data
+
     def save_to_db(self):
-        User = get_user_model()
-        user = User.objects.create_user(
-            username=self.new_user.get('username'),
-            email=self.new_user.get('email'),
-            password=self.new_user.get('password'),
-            user_public_name=self.new_user.get('username'),
-            about='',
-        )
-        if user:
+        username = self.cleaned_data.get('username')
+        email = self.cleaned_data.get('email')
+        password = self.cleaned_data.get('password')
+
+        User = UserProfile
+        try:
+            User.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+                user_public_name=username,
+                about='',
+            )
             return True
-        else:
+        except Exception as e:
+            print(e)
             return False
 
 class UserProfileForm(forms.ModelForm):
@@ -74,52 +80,66 @@ class UserProfileForm(forms.ModelForm):
 
 
 class CreateRoomForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+
     room_name = forms.CharField(label='Room name', max_length=100)
-    invite_users = forms.CharField(label='invite users', required=False)
+    invite_users = forms.CharField(label='Invite users', required=False)
     messages_for_invite = forms.CharField(label='Message for invite`s user', max_length=256, required=False)
-    is_private = forms.BooleanField(label='Privet room', required=False)
-
-    New_room = {}
-
+    is_private = forms.BooleanField(label='Private room', required=False)
 
     def clean(self):
         cleaned_data = super().clean()
         room_name = cleaned_data.get('room_name')
         invite_users = cleaned_data.get('invite_users')
-        messages = cleaned_data.get('messages_for_invite')
+        messages_for_invite = cleaned_data.get('messages_for_invite')
         is_private = cleaned_data.get('is_private')
 
-        self.New_room['room_name'] = room_name
-        self.New_room['private'] = bool(is_private)
-        self.New_room['messages'] = messages
-        self.New_room['invite_users'] = invite_users
+        if invite_users is not None:
+            invites = invite_users.split(' ')
+        else:
+            invites = []
+
+        self.cleaned_data['room_data'] = {
+            'room_name': room_name,
+            'private': is_private,
+            'messages': messages_for_invite,
+            'invite_users': invites,
+        }
 
 
     def save_to_db(self):
-        Room = ChatRoom.create_chat_room(self.New_room.get('room_name'),
-                                         private=self.New_room.get('private'))
-        user_obj = UserProfile.objects.get(username=self.cleaned_data.get('username'))
-        user_obj.join_chat_room(Room)
-        Room.users_in_chatroom.add(user_obj)
-        self.New_room['room_slug'] = Room.slug
-        invites = self.New_room.get('invite_users')
-        if invites is not None:
-            invates = invites.split(' ')
-            user_obj.send_invite(invates, self.New_room)
+        room_data = self.cleaned_data.get('room_data')
 
+        Room = ChatRoom.create_chat_room(room_data['room_name'], private=room_data['private'])
+        room_data['room_slug'] = Room.slug
         if Room:
+            if self.request is None:
+                return False
+            user_obj = UserProfile.objects.get(username=self.request.user.username)
+            user_obj.join_chatroom(Room)
+            Room.users_in_chatroom.add(user_obj)
+
+            invites = room_data['invite_users']
+            if invites:
+                user_obj.send_invite(invites, room_data)
+
             return True
         else:
             return False
 
+
 def form_manage(request, form_as=None):
     if form_as is not None:
         if request.method == 'POST':
-            form = form_as(request.POST)
+            form = form_as(request.POST, request=request)
             if form.is_valid():
-                form.cleaned_data['username'] = request.user.username
                 if form.save_to_db():
                     return True
+                else:
+                    return False
             else:
                 return form
         else:

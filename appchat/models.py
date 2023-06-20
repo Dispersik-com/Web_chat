@@ -88,15 +88,17 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
             user.notifications.add(notification)
             user.save()
 
+    def get_notifications(self):
+        return list(self.notifications.all())
 
-    def join_chat_room(self, chat_room):
+    def join_chatroom(self, chat_room):
         self.chat_rooms.add(chat_room)
         chat_room.users_in_chatroom.add(self)
         chat_room.user_count += 1
         chat_room.save()
         self.save()
 
-    def leave_chat_room(self, chat_room):
+    def leave_chatroom(self, chat_room):
         self.chat_rooms.remove(chat_room)
         self.save()
 
@@ -116,9 +118,6 @@ class ChatMessage(models.Model):
     def __str__(self):
         return str(f'{self.sender}: {self.message}')
 
-    # def get_sender(self):
-    #     return [self.sender]
-
     def get_message(self):
         return [self.message]
 
@@ -128,7 +127,7 @@ class ChatRoom(models.Model):
     slug = models.SlugField(unique=True)
     messages = models.ManyToManyField('ChatMessage')
     users_in_chatroom = models.ManyToManyField('UserProfile')
-    user_count = models.PositiveIntegerField()
+    user_count = models.PositiveIntegerField(default=0)
     is_private = models.BooleanField(default=False)
     time_created = models.DateTimeField(auto_now_add=True)
 
@@ -143,6 +142,7 @@ class ChatRoom(models.Model):
         new_message.save()
         self.messages.add(new_message)
         self.save()
+        return new_message
 
     def get_absolute_url(self):
         return reverse('chat_room', args=[self.slug])
@@ -151,12 +151,11 @@ class ChatRoom(models.Model):
     @classmethod
     def create_chat_room(cls, name, private=False):
         try:
-            # Формируем уникальный slug для комнаты
             slug = slugify(name)
             slug_suffix = hash(datetime.datetime.now().isoformat())
-            slug = f"{slug}-{slug_suffix}"
+            slug = f"{slug}_{slug_suffix}"
             # Создаем объект комнаты чата
-            chat_room = cls(name=name, slug=slug, user_count=1, is_private=private)
+            chat_room = cls(name=name, slug=slug, user_count=0, is_private=private)
             chat_room.save()
             return chat_room
 

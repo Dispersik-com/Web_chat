@@ -1,14 +1,14 @@
 .notifications {
-  background-color: black;
+  background-color: #333;
   padding: 20px;
   margin: 20px auto;
   max-width: 600px;
   border-radius: 10px;
-  box-shadow: 0 0 10px lime;
+  box-shadow: 0px 0px 20px rgba(0, 200, 200, 0.9);
 }
 
 .notifications h2 {
-  color: lime;
+  color: #FFFF00;
 }
 
 .notifications ul {
@@ -19,12 +19,12 @@
 .notifications li {
   margin-bottom: 20px;
   padding: 10px;
-  border: 1px solid lime;
-  background-color: black;
+  border: 1px solid black;
+  background-color: #333;
 }
 
 .notification-info p {
-  color: lime;
+  color: #FFFF00;
   margin: 0;
 }
 
@@ -35,7 +35,7 @@
 }
 
 .notification-actions a {
-  color: lime;
+  color: #FFFF00;
   text-decoration: none;
 }
 
@@ -45,7 +45,7 @@
 
 .delete-button {
   background-color: red;
-  color: lime;
+  color: black;
   padding: 5px 10px;
   border: none;
   border-radius: 5px;
@@ -53,5 +53,5 @@
 }
 
 .delete-button:hover {
-  background-color: darkred;
+  background-color: white;
 }

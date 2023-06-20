@@ -10,11 +10,35 @@
         <div class="search-container">
             <input type="text" id="search-input" placeholder="Search room">
         </div>
+
+        <div class="pagination">
+                <span>Per page:</span>
+                <a href="?per_page=10" {% if per_page == 10 %} class="active" {% endif %} >10</a>
+                <a href="?per_page=25" {% if per_page == 25 %} class="active" {% endif %} >25</a>
+                <a href="?per_page=50" {% if per_page == 50 %} class="active" {% endif %} >50</a>
+                <a href="?per_page=100" {% if per_page == 100 %} class="active" {% endif %} >100</a>
+            </div>
+
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+
+                <span class="current-page">{{ page_obj.number }}</span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                {% endif %}
+            </div>
+
         <div id="container-for-rooms">
                 <ul id="room-list">
                     {% for room in page_obj %}
                         {% if room.is_private is False %}
-                        <li><a href="{% url 'chat_room' room.slug %}">{{ room.name }}</a> <h5>Users: {{room.user_count}}. Time created: {{ room.time_created }}</h5></h4></li>
+                        <li><a href="{% url 'chat_room' room.slug %}">{{ room.name }}</a>
+                            <h5>Users: {{room.user_count}}.</h5>
+                            <h5>Time created: {{ room.time_created }}.</h5>
+                        </li>
                         {% endif %}
                     {% endfor %}
                 </ul>
