@@ -1,21 +1,17 @@
 from django.http import HttpResponse, HttpResponseNotFound
-from rest_framework import generics, status
+from rest_framework import generics
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from rest_framework.views import APIView
+from .models import ChatRoom, ChatMessage
+from .serializers import ChatRoomsSerializer
 
-from .models import ChatRoom, ChatMessage, UserProfile
-from .serializers import *
-
-class ChatRoomsList(generics.ListAPIView):
+class ChatRoomsListCreate(generics.ListCreateAPIView):
     queryset = ChatRoom.objects.all()
-    serializer_class = ChatRoomsListSerializer
+    serializer_class = ChatRoomsSerializer
     pagination_class = PageNumberPagination
-    # permission_classes = (IsAuthenticated, )
-    page_size = 20
-    page_size_query_param = 'page_size'
+    # page_size = 20
+    # page_size_query_param = 'page_size'
 
     def get(self, request, *args, **kwargs):
         chatRoom_slug = kwargs.get('chatRoom_slug', None)
@@ -32,34 +28,28 @@ class ChatRoomsList(generics.ListAPIView):
 
         return HttpResponseNotFound({'error': 'The path does not exist'})
 
-
-class ChatRoomsCreate(generics.CreateAPIView):
-    queryset = ChatRoom.objects.all()
-    serializer_class = ChatRoomsCreateSerializer
-    pagination_class = PageNumberPagination
-    # permission_classes = (IsAuthenticated,)
-
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'detail': 'Chat room created successfully'}, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        chatRoom_slug = kwargs.get('chatRoom_slug', None)
+        if chatRoom_slug and 'send' in request.path:
+            chat_room = get_object_or_404(ChatRoom, slug=chatRoom_slug)
+            new_message = ChatMessage(**kwargs)
+            chat_room.messages.add(new_message)
+            new_message.save()
+            chat_room.save()
+            return Response({'Response ': 'Message success append'})
+
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response({'post': serializer.data})
 
 
 class ChatRoomsDelete(generics.DestroyAPIView):
     queryset = ChatRoom.objects.all()
-    serializer_class = ChatRoomsListSerializer
+    serializer_class = ChatRoomsSerializer
     lookup_field = 'slug'
-    # permission_classes = (IsAuthenticated,)
 
-
-
-
-# class DeviceLogoutView(APIView):
-#     def post(self, request):
-#         user = request.user
-#         user.auth_token.delete()
-#         return Response(status=status.HTTP_200_OK)
+    def perform_destroy(self, instance):
+        return instance.delete()
 

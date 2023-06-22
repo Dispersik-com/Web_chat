@@ -9,10 +9,10 @@ from django.views.generic import ListView, DetailView
 from django.contrib.auth import logout
 from django.shortcuts import render, redirect
 
-
 from .utils import DataMixin
 from .form import SingUpForm, CreateRoomForm, form_manage, UserProfileForm
 from .models import *
+
 
 # стартовая странница
 def index(request):
