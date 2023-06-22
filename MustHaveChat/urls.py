@@ -28,13 +28,14 @@ from .routing import websocket_urlpatterns
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('appchat.urls')),
-    path('api/v1/ChatRooms/List', ChatRoomsListCreate.as_view()),
-    path('api/v1/ChatRooms/room/<slug:chatRoom_slug>', ChatRoomsListCreate.as_view()),
-    path('api/v1/ChatRooms/room/send/<slug:chatRoom_slug>', ChatRoomsListCreate.as_view()),
-    path('api/v1/ChatRooms/room/delete/<slug:slug>', ChatRoomsDelete.as_view()),
-    path('', include('django.contrib.auth.urls')),
+    # api
+    path('api/v1/drf-auth/', include('rest_framework.urls')),
+    path('api/v1/chat-rooms/list', ChatRoomsList.as_view()),
+    path('api/v1/chat-rooms/room/<slug:chatRoom_slug>', ChatRoomsList.as_view()),
+    path('api/v1/chat-rooms/create/', ChatRoomsCreate.as_view()),
+    path('api/v1/chat-rooms/delete/<slug:slug>', ChatRoomsDelete.as_view()),
+    # WebSocket path
     *websocket_urlpatterns,
-
 ]
 
 if settings.DEBUG:
