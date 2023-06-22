@@ -57,19 +57,60 @@
 
         {% else %}
 
-<!--      <form id="message-form" method="POST">-->
-      {% csrf_token %}
+
       <div class="message-container">
         <textarea id="message" class="message-input" placeholder="input your message"></textarea>
         <button type="submit" class="send-button">Send</button>
       </div>
-<!--    </form>-->
 
     {% endif %}
 </div>
+<script>
+    // Создание WebSocket соединения
+    var chatRoomSlug = '{{ chat_room.slug }}' + '/';
+    var socketURL = 'ws://' + window.location.host + '/ws/chat_room/' + chatRoomSlug;
+    const socket = new WebSocket(socketURL);
 
-<script src="{% static 'appchat/js/chat_room_add_messages.js' %}"></script>
-<script src="{% static 'appchat/js/chat_room_drop_friends_list.js' %}"></script>
-<script src="{% static 'appchat/js/chat_room_websocket.js' %}"></script>
+  // Обработчик открытия соединения
+  socket.onopen = function(event) {
+    console.log('WebSocket connection opened');
+  };
+
+  // Обработчик закрытия соединения
+  socket.onclose = function(event) {
+    console.log('WebSocket connection closed');
+  };
+
+  // Обработчик получения сообщения от сервера
+  socket.onmessage = function(event) {
+    const message = JSON.parse(event.data);
+    console.log('Received message from server:', message);
+    // Добавьте код для обработки полученного сообщения
+  };
+
+  // Функция отправки сообщения на сервер
+  function sendMessage() {
+    const messageInput = document.getElementById('message');
+    const message = messageInput.value;
+
+    // Проверка, что сообщение не пустое
+    if (message.trim() !== '') {
+      const data = {
+        message: message
+      };
+
+      // Отправка сообщения на сервер в формате JSON
+      socket.send(JSON.stringify(data));
+
+      // Очистка поля ввода сообщения
+      messageInput.value = '';
+    }
+  }
+
+  // Назначение обработчика события нажатия на кнопку "Send"
+  const sendButton = document.querySelector('.send-button');
+  sendButton.addEventListener('click', sendMessage);
+
+</script>
 
 {% endblock %}

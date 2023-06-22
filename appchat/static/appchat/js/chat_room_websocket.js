@@ -1,32 +1,42 @@
 const socket = new WebSocket(`ws://${window.location.host}/ws/chat/`);
 
-    socket.onopen = () => {
-      console.log('WebSocket connection established.');
-      alert('WebSocket connection established.');
-    };
+socket.onopen = () => {
+  console.log('WebSocket connection established.');
+  alert('WebSocket connection established.');
 
-    socket.onmessage = (event) => {
-      const message = JSON.parse(event.data).message;
-      console.log('Received message from server:', message);
+  // Получаем ссылки на элементы DOM по их идентификаторам
+  const messageInput = document.getElementById('message');
+  const sendButton = document.getElementById('send-button');
 
-      // Отображение ответа на странице
-      const responseElement = document.getElementById('response');
-      responseElement.value = message;
-    };
+  // Создаем функцию-обработчик события нажатия на кнопку
+  function sendMessage() {
+    // Получаем текст из текстового поля
+    const message = messageInput.value;
 
-    socket.onclose = (event) => {
-      console.log('WebSocket connection closed:', event);
-    };
+    // Выполняем необходимые действия с сообщением
+    console.log('Отправляем сообщение:', message);
 
-    socket.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
+    // Очищаем текстовое поле
+    messageInput.value = '';
+  }
 
-    function sendMessage() {
-      const inputElement = document.getElementById('message-input');
-      const message = inputElement.value;
+  // Добавляем слушатель события нажатия на кнопку
+  sendButton.addEventListener('click', sendMessage);
+};
 
-      socket.send(JSON.stringify({ 'message': message }));
+socket.onmessage = (event) => {
+  const message = JSON.parse(event.data).message;
+  console.log('Received message from server:', message);
 
-      inputElement.value = '';
-    }
+  // Отображение ответа на странице
+  const responseElement = document.getElementById('response');
+  responseElement.value = message;
+};
+
+socket.onclose = (event) => {
+  console.log('WebSocket connection closed:', event);
+};
+
+socket.onerror = (error) => {
+  console.error('WebSocket error:', error);
+};

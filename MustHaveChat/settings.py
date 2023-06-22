@@ -37,15 +37,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'debug_toolbar',
+    # 'debug_toolbar', # Для просмотра запросов
     'rest_framework',
+    'rest_framework.authtoken', # после добавление сделать миграцию - migrate
     'channels',
     'appchat.apps.AppchatConfig',
 ]
 
+# Создания слоя каналов для веб-сокетов
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        'BACKEND': 'channels.layers.InMemoryChannelLayer', # Также можно использовать Redis
     },
 }
 
@@ -94,6 +96,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'MustHaveChat.wsgi.application'
 
+ASGI_APPLICATION = 'MustHaveChat.asgi.application'
+
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -123,7 +127,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Ссылка на модель, для использования функций аутентификации ( login, logout)
+# Ссылка на модель, для использования функций аутентификации (login, logout)
+# Обязательно должно наследоваться от AbstractBaseUser
 AUTH_USER_MODEL = 'appchat.UserProfile'
 
 LOGIN_URL = '/login/' # Имя url для авторизации
@@ -161,6 +166,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer', # Закомментировать, чтоб получать сырые данные
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+            # Все api доступны только авторизованным пользователям
+            'rest_framework.permissions.IsAuthenticated',
+            # авторизация токенам
+            'rest_framework.authentication.TokenAuthentication',
+            # Стандартная авторизация (через cookie)
+            # Можно комбинировать, но важен порядок
+            'rest_framework.authentication.BasicAuthentication',
+            'rest_framework.authentication.SessionAuthentication',
+
     ]
 }
