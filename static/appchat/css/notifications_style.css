@@ -1,0 +1,57 @@
+.notifications {
+  background-color: #333;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 600px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 20px rgba(0, 200, 200, 0.9);
+}
+
+.notifications h2 {
+  color: #FFFF00;
+}
+
+.notifications ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.notifications li {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid black;
+  background-color: #333;
+}
+
+.notification-info p {
+  color: #FFFF00;
+  margin: 0;
+}
+
+.notification-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notification-actions a {
+  color: #FFFF00;
+  text-decoration: none;
+}
+
+.delete-form {
+  display: inline;
+}
+
+.delete-button {
+  background-color: red;
+  color: black;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: white;
+}

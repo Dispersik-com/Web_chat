@@ -1,0 +1,90 @@
+body {
+    background-color: #333;
+}
+
+.form-container {
+    margin-left: 20%;
+    margin-right: 20%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 90vh;
+    background-color: #333;
+    border: none;
+    // box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 5px auto 0;
+    background-color: #FFFF0;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 200, 200, 0.9);
+    padding: 50px;
+    width: 400px;
+}
+
+.form-container h1, h5 {
+    color: #FF9900;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    border: none;
+    border-bottom: 1px solid #FFFF00;
+    background-color: transparent;
+    margin-bottom: 20px;
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    color: #FFFF00;
+}
+
+input[type="submit"] {
+    background-color: #FFFF00;
+    color: #000000;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #FF0000;
+}
+
+label {
+    color: #FFFF00;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+button {
+    font-size: 20px;
+    color: black;
+    background-color: #FFFF00;
+    border-radius: 10px;
+}
+
+button:hover {
+    background-color: #FFFFF0;
+    cursor: pointer;
+}
+
+.errorlist {
+    color: #FFFF00;
+}
+
+.errorlist ul li {
+    color: #FFFF00;
+}

@@ -1,0 +1,103 @@
+.profile {
+  background-color: #333;
+  color: #ff9900;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 700px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 20px rgba(0, 200, 200, 0.9);
+}
+
+
+.profile .user-info label {
+  font-size: 16px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 20px;
+  color: #FFFF00;
+}
+
+.profile .user-info input[type="text"],
+.profile .user-info input[type="file"],
+.profile .user-info textarea {
+  width: 95%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 200, 200, 0.9);
+  background-color: #333;
+  color: white;
+}
+
+.profile .user-info button {
+  background-color: #FFFF00;
+  color: black;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 25px;
+  width: 400px;
+}
+
+.profile .user-info button:hover {
+  background-color: white;
+}
+
+.profile .friends {
+  overflow-x: auto;
+  white-space: nowrap;
+  color: #FFFF00;
+}
+
+.profile .friends ul {
+  list-style-type: none;
+  padding: 0;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.profile .friends ul li {
+  display: inline-block;
+  color: #FFFF00;
+  margin-right: 10px;
+}
+
+.profile .registration-date p {
+  color: #ff9900;
+}
+
+.photo img {
+  width: 20%;
+  height: 20%;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  border: 2px solid #FFFF00;
+}
+
+.photo p {
+  color: white;
+  font-size: 25px;
+  text-decoration: none;
+}
+
+.photo a {
+  color: lime;
+  text-decoration: none;
+}
+
+.photo label {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.photo input[type="file"] {
+  display: none; /* Скрываем оригинальный элемент <input> */
+}
+
+#save-message {
+  margin-top: 10px;
+  color: #FFFF00;
+}

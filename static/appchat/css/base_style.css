@@ -1,0 +1,139 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #333;
+  color: #333;
+}
+
+body li {
+  margin-bottom: 20px;
+}
+
+body a {
+  color: #ffcc00;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-bottom: 1px solid #ffcc00;
+  transition: border-bottom-color 0.3s ease;
+}
+
+body a:hover {
+  border-bottom-color: #ff9900;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  background-color: #FFFF00;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #FF9900;
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: #333;
+}
+
+
+.sidebar {
+  background-color: #333;
+  color: #fff;
+  height: 100vh;
+  width: 200px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  border-right: 1px solid #ffcc00;
+}
+
+.sidebar-nav {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  background-color: #333;
+  color: #ffcc00;
+  padding: 20px;
+  border-bottom: 1px solid #ffcc00;
+  text-align: right;
+}
+
+.header a {
+  color: #ffcc00;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-bottom: 1px solid #ffcc00;
+  transition: border-bottom-color 0.3s ease;
+}
+
+.header a:hover {
+  color: #ff9900;
+  border-bottom-color: #ff9900;
+}
+
+.header-element {
+  background-color: #333;
+  border: 1px solid #ffcc00;
+  display: flex;
+  margin-right: 30px;
+}
+
+.header-element span {
+  color: white;
+  padding: 4px;
+  border-radius: 30px;
+}
+
+#chat-rooms {
+  box-shadow: 0px 0px 5px rgba(0, 200, 200, 0.9);
+  border-radius: 15px;
+  position: fixed;
+  left: 13px;
+  bottom: 35%;
+  padding: 10px;
+  color: #ffcc00;
+  max-height: 200px;  /* Высота блока, при которой будет появляться вертикальная прокрутка */
+  max-width: 200px;
+  overflow: auto;  /* Включение вертикальной прокрутки при достижении максимальной высоты */
+}
+
+#chat-rooms h2 {
+  font-size: 24px;
+  font-weight: normal;
+  color: #ff9900;
+  margin-top: 20px;
+}
+
+#chat-rooms ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+#chat-rooms ul li {
+  margin-bottom: 10px;
+}
+
+#chat-rooms ul li a {
+  color: #ffcc00;
+  text-decoration: none;
+  border-bottom: 1px solid #ffcc00;
+  transition: border-bottom-color 0.3s ease;
+}
+
+#chat-rooms ul li a:hover {
+  border-bottom-color: #ff9900;
+}
