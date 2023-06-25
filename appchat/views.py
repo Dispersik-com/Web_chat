@@ -14,6 +14,7 @@ from .utils import DataMixin
 from .form import SingUpForm, CreateRoomForm, form_manage, UserProfileForm
 from .models import *
 
+
 # стартовая странница
 def index(request):
     if request.user.is_authenticated:
@@ -160,25 +161,25 @@ class ChatRoomDetailView(DataMixin, DetailView):
     context_object_name = 'chat_room'
     slug_url_kwarg = 'room_slug'
 
-    def post(self, request, *args, **kwargs):
-        chat_room = self.get_object()
-        message = request.POST.get('message')
-        sender = request.user
-
-        if message and sender:
-            # Создание и возврат JSON-ответа с добавленным сообщением
-            new_message = chat_room.add_message(sender, message)
-            response_data = {
-                'message': {
-                    'sender': {
-                        'username': new_message.sender.username
-                    },
-                    'message': new_message.message
-                }
-            }
-            return JsonResponse(response_data)
-
-        return super().get(request, *args, **kwargs)
+    # def post(self, request, *args, **kwargs):
+    #     chat_room = self.get_object()
+    #     message = request.POST.get('message')
+    #     sender = request.user
+    #
+    #     if message and sender:
+    #         # Создание и возврат JSON-ответа с добавленным сообщением
+    #         new_message = chat_room.add_message(sender, message)
+    #         response_data = {
+    #             'message': {
+    #                 'sender': {
+    #                     'username': new_message.sender.username
+    #                 },
+    #                 'message': new_message.message
+    #             }
+    #         }
+    #         return JsonResponse(response_data)
+    #
+    #     return super().get(request, *args, **kwargs)
 
 
 @login_required

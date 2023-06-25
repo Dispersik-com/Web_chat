@@ -1,21 +1,33 @@
-from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.db import database_sync_to_async
-# from .models import ChatMessage, ChatRoom
 
-class ChatConsumer(AsyncWebsocketConsumer):
+
+class ChatConsumer(AsyncJsonWebsocketConsumer):
+
+    @database_sync_to_async
+    def get_room(self, user):
+        return user.chat_rooms.all().get(slug=self.room_slug)
+
     async def connect(self):
-        print('New client connect! ')
-        # Подключение клиента
-        await self.accept()
+        user = self.scope.get('user')
+        if user and user.is_authenticated:
+            print('Connect :', user.username)
+            # Пользователь аутентифицирован, разрешить подключение
+            await self.accept()
 
-        # Получение параметров запроса, в данном случае slug комнаты
-        self.room_slug = 'chat' # self.scope['url_route']['kwargs']['room_slug']
+            # Получение параметров запроса, в данном случае slug комнаты
+            self.room_slug = self.scope['url_route']['kwargs']['room_slug']
+            room = await self.get_room(user)
+            print('Connect to room:', room)
+            # Присоединение к группе чата, используя slug комнаты
+            await self.channel_layer.group_add(
+                self.room_slug,
+                self.channel_name
+            )
 
-        # Присоединение к группе чата, используя slug комнаты
-        await self.channel_layer.group_add(
-            self.room_slug,
-            self.channel_name
-        )
+        else:
+            # Пользователь не аутентифицирован, закрыть соединение
+            await self.close()
 
     async def disconnect(self, close_code):
         # Отключение клиента
@@ -24,33 +36,27 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-    async def receive(self, text_data):
-        print(text_data)
-        # Получение сообщения от клиента
-        await self.send_message(text_data)
+    async def receive_json(self, content, **kwargs):
+        message = content.get('message')
+        sender = content.get('sender')
 
-    async def send_message(self, text_data):
-        # Отправка сообщения клиенту и сохранение в базе данных
-        # sender = self.scope['user']
-        # message = await self.create_message(sender, text_data)
-
-        # Отправка сообщения всем клиентам в группе чата
+        # Отправка сообщения в группу чата
         await self.channel_layer.group_send(
             self.room_slug,
             {
                 'type': 'chat_message',
-                'sender': 'I',
-                'message': 'HI-HI-HI'
+                'message': message,
+                'sender': sender
             }
         )
 
     async def chat_message(self, event):
-        # Получение сообщения из группы чата и отправка его клиенту
-        await self.send(text_data=event['message'])
+        message = event.get('message')
+        sender = event.get('sender')
 
-    # @database_sync_to_async
-    # def create_message(self, sender, message):
-    #     # Создание и сохранение сообщения в базе данных
-    #     # chat_room = ChatRoom.objects.get(slug=self.room_slug)
-    #     # new_message = ChatMessage.objects.create(chat_room=chat_room, sender=sender, message=message)
-    #     return new_message
+        # Отправка сообщения клиенту
+        await self.send_json({
+            'type': 'chat_message',
+            'sender': sender,
+            'message': message
+        })
