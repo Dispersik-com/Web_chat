@@ -69,6 +69,20 @@ class UserViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
 
 
+class UserCreate(generics.CreateAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserCreateSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail': 'User created successfully'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 
 # class DeviceLogoutView(APIView):

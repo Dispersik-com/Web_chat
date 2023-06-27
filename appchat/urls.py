@@ -31,6 +31,7 @@ router.register(r'users', UserViewSet)
 
 api_urlpatterns = [
     path('api/v1/', include(router.urls)),
+    path('api/v1/create-user/', UserCreate.as_view()),
     path('api/v1/drf-auth/', include('rest_framework.urls')),
     path('api/v1/chat-rooms/list/', ChatRoomsList.as_view()),
     path('api/v1/chat-rooms/room/<slug:room_slug>/', ChatRoomsList.as_view()),

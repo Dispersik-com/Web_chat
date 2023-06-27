@@ -37,3 +37,21 @@ class UserSerializers(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = "__all__"
+
+
+class UserCreateSerializer(serializers.Serializer):
+    User_name = serializers.CharField(max_length=200)
+    Email = serializers.CharField(max_length=200)
+    Password = serializers.CharField(max_length=200)
+
+    def create(self, validated_data):
+        user_name = validated_data.get('User_name', None)
+        email = validated_data.get('Email', None)
+        password = validated_data.get('Password', None)
+        if user_name and email and password:
+            user = UserProfile.objects.create_user(username=user_name,
+                                            password=password,
+                                            email=email)
+            return user
+        else:
+            raise serializers.ValidationError("Invalid data")
