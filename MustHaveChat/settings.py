@@ -12,10 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -39,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 'debug_toolbar', # Для просмотра запросов
     'rest_framework',
-    'rest_framework.authtoken', # после добавление сделать миграцию - migrate
+    'rest_framework.authtoken',  # после добавление сделать миграцию - migrate
     'channels',
     'appchat.apps.AppchatConfig',
 ]
@@ -47,7 +45,7 @@ INSTALLED_APPS = [
 # Создания слоя каналов для веб-сокетов
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer', # Также можно использовать Redis
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',  # Также можно использовать Redis
     },
 }
 
@@ -108,7 +106,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -131,8 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Обязательно должно наследоваться от AbstractBaseUser
 AUTH_USER_MODEL = 'appchat.UserProfile'
 
-LOGIN_URL = '/login/' # Имя url для авторизации
-
+LOGIN_URL = '/login/'  # Имя url для авторизации
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -144,7 +140,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -164,19 +159,24 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    # 'PAGE_SIZE': 5,
+
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-            # Все api доступны только авторизованным пользователям
-            'rest_framework.permissions.IsAuthenticated',
-            # авторизация токенам
-            'rest_framework.authentication.TokenAuthentication',
-            # Стандартная авторизация (через cookie)
-            # Можно комбинировать, но важен порядок
-            'rest_framework.authentication.BasicAuthentication',
-            'rest_framework.authentication.SessionAuthentication',
+        # Все api доступны только авторизованным пользователям
+        # 'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # авторизация по токенам
+        'rest_framework.authentication.TokenAuthentication',
+        # Стандартная авторизация (через cookie)
+        # Можно комбинировать, но важен порядок
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
 
-    ]
+    ],
 }

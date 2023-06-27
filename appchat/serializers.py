@@ -32,3 +32,8 @@ class ChatRoomsCreateSerializer(serializers.Serializer):
         else:
             raise serializers.ValidationError("Invalid data")
 
+
+class UserSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = "__all__"

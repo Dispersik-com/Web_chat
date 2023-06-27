@@ -20,22 +20,14 @@ from django.conf.urls.static import static
 from MustHaveChat import settings
 from appchat.views import page_not_found, error_500_view
 
-# My API
-from appchat.api import *
 from .routing import websocket_urlpatterns
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('appchat.urls')),
-    # api
-    path('api/v1/drf-auth/', include('rest_framework.urls')),
-    path('api/v1/chat-rooms/list', ChatRoomsList.as_view()),
-    path('api/v1/chat-rooms/room/<slug:chatRoom_slug>', ChatRoomsList.as_view()),
-    path('api/v1/chat-rooms/create/', ChatRoomsCreate.as_view()),
-    path('api/v1/chat-rooms/delete/<slug:slug>', ChatRoomsDelete.as_view()),
     # WebSocket path
-    *websocket_urlpatterns,
+    path('', include(websocket_urlpatterns)),
 ]
 
 if settings.DEBUG:

@@ -1,9 +1,12 @@
 from .views import *
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from .form import LoginFormView
 from django.views.decorators.cache import cache_page
+
+from .api import *
+from rest_framework import routers
 
 urlpatterns = [
     path('', index, name='index'),
@@ -21,3 +24,18 @@ urlpatterns = [
     path('notifications/', NotificationsView.as_view(), name='notifications'),
     path('notifications/delete/<int:notification_id>/', delete_notification, name='delete_notification'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) # Обязательно добавить для статических файлов
+
+
+router = routers.DefaultRouter()
+router.register(r'users', UserViewSet)
+
+api_urlpatterns = [
+    path('api/v1/', include(router.urls)),
+    path('api/v1/drf-auth/', include('rest_framework.urls')),
+    path('api/v1/chat-rooms/list/', ChatRoomsList.as_view()),
+    path('api/v1/chat-rooms/room/<slug:room_slug>/', ChatRoomsList.as_view()),
+    path('api/v1/chat-rooms/create/', ChatRoomsCreate.as_view()),
+    path('api/v1/chat-rooms/delete/<slug:room_slug>/', ChatRoomsDelete.as_view()),
+]
+
+urlpatterns += api_urlpatterns

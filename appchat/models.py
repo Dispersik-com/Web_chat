@@ -52,6 +52,7 @@ class UserProfileManager(BaseUserManager):
         # с предоставленным именем пользователя, паролем и дополнительными полями
         return self.create_user(username, password, **extra_fields)
 
+
 class UserProfile(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=255, unique=True)
