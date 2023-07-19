@@ -15,9 +15,9 @@ This project implements a simple chat, where users can communicate with each oth
 
 Here are a few screenshots of the website pages.
 
+![Global_room](https://github.com/Dispersik-com/Web_chat/assets/126075849/3d99fb5e-d328-47b3-9ee6-70d080606a4f)
+
 ![Chat_room](https://github.com/Dispersik-com/Web_chat/assets/126075849/31e9a288-b0a5-4dec-9549-b1b6d8df2656)
-
-
 
 ## How to run:
 
