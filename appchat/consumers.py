@@ -48,29 +48,31 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         message = content.get('message')
         sender = content.get('sender')
 
-        # Отправка сообщения в группу чата
-        await self.channel_layer.group_send(
-            self.room_slug,
-            {
-                'type': 'chat_message',
-                'message': message,
-                'sender': sender
-            }
-        )
-
-    async def chat_message(self, event):
-        message = event.get('message')
-        sender = event.get('sender')
         user = self.scope.get('user')
         add_message = await self.add_message(user, message)
+
         if add_message:
-            # Отправка сообщения клиенту
-            await self.send_json({
-                'type': 'chat_message',
-                'sender': sender,
-                'message': message
-            })
+            # Отправка сообщения в группу чата
+            await self.channel_layer.group_send(
+                self.room_slug,
+                {
+                    'type': 'chat_message',
+                    'message': message,
+                    'sender': sender
+                }
+            )
         else:
             # Отправлять ошибку отправки
             print('Sending error')
             pass
+
+    async def chat_message(self, event):
+        message = event.get('message')
+        sender = event.get('sender')
+
+        # Отправка сообщения клиенту
+        await self.send_json({
+            'type': 'chat_message',
+            'sender': sender,
+            'message': message
+        })

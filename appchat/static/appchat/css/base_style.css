@@ -103,7 +103,7 @@ body a:hover {
   border-radius: 15px;
   position: fixed;
   left: 13px;
-  bottom: 35%;
+  bottom: 60%;
   padding: 10px;
   color: #ffcc00;
   max-height: 200px;  /* Высота блока, при которой будет появляться вертикальная прокрутка */
