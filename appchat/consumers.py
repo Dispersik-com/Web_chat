@@ -8,17 +8,25 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     def get_room(self, user):
         return user.chat_rooms.all().get(slug=self.room_slug)
 
+    @database_sync_to_async
+    def add_message(self, sender, message):
+        message = self.room.add_message(sender, message)
+        if message is None:
+            return False
+        return True
+
     async def connect(self):
         user = self.scope.get('user')
         if user and user.is_authenticated:
-            print('Connect :', user.username)
+            # print('Connect :', user.username)
             # Пользователь аутентифицирован, разрешить подключение
             await self.accept()
 
             # Получение параметров запроса, в данном случае slug комнаты
             self.room_slug = self.scope['url_route']['kwargs']['room_slug']
-            room = await self.get_room(user)
-            print('Connect to room:', room)
+            self.room = await self.get_room(user)
+
+            # print('Connect to room:', room)
             # Присоединение к группе чата, используя slug комнаты
             await self.channel_layer.group_add(
                 self.room_slug,
@@ -53,10 +61,16 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     async def chat_message(self, event):
         message = event.get('message')
         sender = event.get('sender')
-
-        # Отправка сообщения клиенту
-        await self.send_json({
-            'type': 'chat_message',
-            'sender': sender,
-            'message': message
-        })
+        user = self.scope.get('user')
+        add_message = await self.add_message(user, message)
+        if add_message:
+            # Отправка сообщения клиенту
+            await self.send_json({
+                'type': 'chat_message',
+                'sender': sender,
+                'message': message
+            })
+        else:
+            # Отправлять ошибку отправки
+            print('Sending error')
+            pass

@@ -139,10 +139,13 @@ class ChatRoom(models.Model):
         return list(self.messages.all())
 
     def add_message(self, sender, message):
-        new_message = ChatMessage(sender=sender, message=message)
-        new_message.save()
-        self.messages.add(new_message)
-        self.save()
+        try:
+            new_message = ChatMessage(sender=sender, message=message)
+            new_message.save()
+            self.messages.add(new_message)
+            self.save()
+        except Exception:
+            return False
         return new_message
 
     def get_absolute_url(self):
