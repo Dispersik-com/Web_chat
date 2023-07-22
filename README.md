@@ -15,15 +15,20 @@ This project implements a simple chat, where users can communicate with each oth
 
 Here are a few screenshots of the website pages.
 
-![Global_room](https://github.com/Dispersik-com/Web_chat/assets/126075849/3d99fb5e-d328-47b3-9ee6-70d080606a4f)
+**The view of Chat room:**
 
 ![Chat_room](https://github.com/Dispersik-com/Web_chat/assets/126075849/31e9a288-b0a5-4dec-9549-b1b6d8df2656)
+
+**The view of profile page:**
+
+![profile](https://github.com/Dispersik-com/Web_chat/assets/126075849/74615adf-ccb4-478a-9bfc-8821e52d87e3)
+
 
 ## How to run:
 
 bash
 ```
-git clone
+git clone https://github.com/Dispersik-com/Web_chat.git
 cd Web_chat
 python3 -m venv venv
 source venv/bin/activate
