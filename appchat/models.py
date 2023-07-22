@@ -79,12 +79,9 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     def get_friends(self):
         return self.friends.all()
 
-    def send_invite(self, recipients, room):
+    def send_invite(self, recipients, notification):
+
         Users = UserProfile.objects.filter(username__in=recipients)
-        notification = Notification(user=self,
-                                    link=room.get('room_slug'),
-                                    message=room.get('messages'))
-        notification.save()
         for user in Users:
             user.notifications.add(notification)
             user.save()
@@ -95,12 +92,14 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     def join_chatroom(self, chat_room):
         self.chat_rooms.add(chat_room)
         chat_room.users_in_chatroom.add(self)
-        chat_room.user_count += 1
+        chat_room.user_count = chat_room.users_in_chatroom.count()
         chat_room.save()
         self.save()
 
     def leave_chatroom(self, chat_room):
         self.chat_rooms.remove(chat_room)
+        chat_room.user_count -= 1
+        chat_room.users_in_chatroom.remove(self)
         self.save()
 
 

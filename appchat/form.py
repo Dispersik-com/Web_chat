@@ -14,7 +14,6 @@ class LoginFormView(LoginView):
     template_name = 'appchat/login.html'
     form_class = AuthenticationForm
 
-
     def form_valid(self, form):
         login(self.request, form.get_user())
         next_url = self.request.GET.get('next')
@@ -30,11 +29,10 @@ class SingUpForm(forms.Form):
         self.request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
 
-
     username = forms.CharField(label='Login', max_length=255)
     email = forms.CharField(label='Email', max_length=255)
-    password = forms.CharField(label='Password (first)', max_length=40)
-    password_valid = forms.CharField(label='Password (valid)', max_length=40)
+    password = forms.PasswordInput(render_value=True)
+    password_valid = forms.PasswordInput(render_value=True)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -73,6 +71,7 @@ class SingUpForm(forms.Form):
             print(e)
             return False
 
+
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
@@ -109,7 +108,6 @@ class CreateRoomForm(forms.Form):
             'invite_users': invites,
         }
 
-
     def save_to_db(self):
         room_data = self.cleaned_data.get('room_data')
 
@@ -123,8 +121,12 @@ class CreateRoomForm(forms.Form):
             Room.users_in_chatroom.add(user_obj)
 
             invites = room_data['invite_users']
+            notification = Notification(user=self,
+                                        link=Room.get_absolute_url(),
+                                        message=room_data.get('messages'))
+            notification.save()
             if invites:
-                user_obj.send_invite(invites, room_data)
+                user_obj.send_invite(invites, notification)
 
             return True
         else:
