@@ -1,14 +1,9 @@
-import requests
-from django.http import HttpResponse, HttpResponseNotFound
-from rest_framework import generics, status, viewsets, mixins
-from rest_framework.decorators import action, permission_classes
+from django.http import HttpResponseNotFound
+from rest_framework import generics, status, viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
-from rest_framework.views import APIView
-
-from .models import ChatRoom, ChatMessage, UserProfile
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializers import *
 
 
@@ -61,6 +56,7 @@ class ChatRoomsDelete(generics.DestroyAPIView):
     lookup_field = 'room_slug'
     permission_classes = (IsAuthenticated,)
 
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserSerializers
@@ -80,14 +76,3 @@ class UserCreate(generics.CreateAPIView):
             return Response({'detail': 'User created successfully'}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
-# class DeviceLogoutView(APIView):
-#     def post(self, request):
-#         user = request.user
-#         user.auth_token.delete()
-#         return Response(status=status.HTTP_200_OK)
-

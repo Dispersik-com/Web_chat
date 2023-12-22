@@ -94,7 +94,7 @@
 }
 
 .photo input[type="file"] {
-  display: none; /* Скрываем оригинальный элемент <input> */
+  display: none;
 }
 
 #save-message {

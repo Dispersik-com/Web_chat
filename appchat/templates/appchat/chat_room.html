@@ -6,12 +6,10 @@
   <link rel="stylesheet" type="text/css" href="{% static 'appchat/css/chat_style.css' %}">
 {% endblock %}
 
-
 {% block content %}
 
-
 <div class="dropdown">
-      <button class="dropdown-toggle" onclick="toggleDropdown()">Users in room ({{ chat_room.user_count }})</button>
+      <button class="dropdown-toggle" onclick="toggleDropdown()">Користувачі в кімнаті ({{ chat_room.user_count }})</button>
       <div class="dropdown-menu" id="dropdownMenu">
         <div class="scrollbar">
           <ul>
@@ -26,15 +24,13 @@
                     </li>
                     {% endif %}
               {% endfor %}
-            <!-- Добавьте больше элементов по мере необходимости -->
           </ul>
         </div>
       </div>
     </div>
 
 <div class="chat-container">
-    <a style="font-size: 16px; color: red; float: right;" href="/leave_room/{{ chat_room.slug }}">Leave room</a>
-
+    <a style="font-size: 16px; color: red; float: right;" href="/leave_room/{{ chat_room.slug }}">Залишити кімнату</a>
 
   <div class="chat">
     {% for m in chat_room.get_messages %}
@@ -52,15 +48,14 @@
       {% if in_room is not True %}
         <form action="{% url 'join_the_room' chat_room.slug %}" method="POST">
           {% csrf_token %}
-          <button type="submit" class="send-button">join the conversation</button>
+          <button type="submit" class="send-button">приєднатися до розмови</button>
         </form>
 
         {% else %}
 
-
       <div class="message-container">
-        <textarea id="message" class="message-input" placeholder="input your message"></textarea>
-        <button type="submit" class="send-button">Send</button>
+        <textarea id="message" class="message-input" placeholder="введіть ваше повідомлення"></textarea>
+        <button type="submit" class="send-button">Відправити</button>
       </div>
 
     {% endif %}
@@ -70,7 +65,7 @@
 function addMessageToChat(sender, message) {
     const chatContainer = document.querySelector('.chat');
 
-    // Создание элементов сообщения
+    // Створення елементів повідомлення
     const messageBubble = document.createElement('div');
     messageBubble.classList.add('message-bubble');
     messageBubble.classList.add(sender === '{{ user.username }}' ? 'right' : 'left');
@@ -86,46 +81,43 @@ function addMessageToChat(sender, message) {
     const messageContent = document.createElement('p');
     messageContent.textContent = message;
 
-    // Добавление элементов в иерархию DOM
+    // Додавання елементів до ієрархії DOM
     messageInfo.appendChild(userName);
     messageBubble.appendChild(messageInfo);
     messageBubble.appendChild(messageContent);
     chatContainer.appendChild(messageBubble);
 }
 
-
-
-    // Создание WebSocket соединения
+    // Створення WebSocket з'єднання
     var chatRoomSlug = '{{ chat_room.slug }}' + '/';
     var socketURL = 'ws://' + window.location.host + '/ws/chat_room/' + chatRoomSlug;
     const socket = new WebSocket(socketURL);
 
-
-  // Обработчик открытия соединения
+  // Обробник відкриття з'єднання
   socket.onopen = function(event) {
-    console.log('WebSocket connection opened');
+    console.log('WebSocket з\'єднання відкрито');
   };
 
-  // Обработчик закрытия соединения
+  // Обробник закриття з'єднання
   socket.onclose = function(event) {
-    console.log('WebSocket connection closed');
+    console.log('WebSocket з\'єднання закрито');
   };
 
-  // Обработчик получения сообщения от сервера
+  // Обробник отримання повідомлення від сервера
   socket.onmessage = function(event) {
     const response = JSON.parse(event.data);
     const message = JSON.parse(event.data).message;
     const sender = JSON.parse(event.data).sender;
-    console.log('Received message from server:', message);
+    console.log('Отримано повідомлення від сервера:', message);
     addMessageToChat(sender, message);
   };
 
-  // Функция отправки сообщения на сервер
+  // Функція відправки повідомлення на сервер
   function sendMessage() {
     const messageInput = document.getElementById('message');
     const message = messageInput.value;
 
-    // Проверка, что сообщение не пустое
+    // Перевірка, що повідомлення не порожнє
     if (message.trim() !== '') {
       const data = {
         type: 'chat_message',
@@ -133,20 +125,19 @@ function addMessageToChat(sender, message) {
         message: message
       };
 
-      // Отправка сообщения на сервер в формате JSON
+      // Відправка повідомлення на сервер у форматі JSON
       socket.send(JSON.stringify(data));
 
-      // Очистка поля ввода сообщения
+      // Очищення поля введення повідомлення
       messageInput.value = '';
     }
   }
 
-  // Назначение обработчика события нажатия на кнопку "Send"
+  // Призначення обробника події натискання на кнопку "Send"
   const sendButton = document.querySelector('.send-button');
   sendButton.addEventListener('click', sendMessage);
 
 </script>
 <script src="{% static 'appchat/js/chat_room_drop_friends_list.js' %}"></script>
-
 
 {% endblock %}

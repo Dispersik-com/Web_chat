@@ -106,9 +106,9 @@ body a:hover {
   bottom: 60%;
   padding: 10px;
   color: #ffcc00;
-  max-height: 200px;  /* Высота блока, при которой будет появляться вертикальная прокрутка */
+  max-height: 200px;
   max-width: 200px;
-  overflow: auto;  /* Включение вертикальной прокрутки при достижении максимальной высоты */
+  overflow: auto;
 }
 
 #chat-rooms h2 {

@@ -3,11 +3,11 @@ from django.utils import timezone
 from django.core.cache import cache
 
 class DataMixin:
-    """ Класс для получения общих данных и уменьшения количества кода"""
+    """ Клас для отримання загальних даних та зменшення кількості коду"""
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Получить количество активных пользователей.
-        # Проверяем кэш для минимизации запросов к БД.
+        # Отримати кількість активних користувачів.
+        # Перевіряємо кеш для мінімізації запитів до БД.
 
         active_users_count = cache.get('active_users_count')
         if not active_users_count:

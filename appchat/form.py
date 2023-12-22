@@ -1,15 +1,13 @@
-
-from django.contrib.auth import login, authenticate, logout, get_user_model
+from django.contrib.auth import login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseServerError
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django import forms
 from .models import *
-import hashlib
-import time
+
+
 class LoginFormView(LoginView):
     template_name = 'appchat/login.html'
     form_class = AuthenticationForm
@@ -145,7 +143,7 @@ def form_manage(request, form_as=None):
             else:
                 return form
         else:
-            form = form_as()  # если метод запроса GET, то создаем пустой объект формы
+            form = form_as()  # якщо метод запиту GET, то створюємо порожній об'єкт форми
             return form
     else:
         return None

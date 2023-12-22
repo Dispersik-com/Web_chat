@@ -15,7 +15,7 @@ from .form import SingUpForm, CreateRoomForm, form_manage, UserProfileForm
 from .models import *
 
 
-# стартовая странница
+# стартова сторінка
 def index(request):
     if request.user.is_authenticated:
         return redirect('profile', user_name=request.user.username)
@@ -37,13 +37,13 @@ def sing_up_view(request):
     return render(request, 'appchat/Sing_up.html', context=context)
 
 
-# Для использования logout нужно дать ссылку на модель в settings.py в поле AUTH_USER_MODEL
+# Для використання logout потрібно дати посилання на модель в settings.py в поле AUTH_USER_MODEL
 def logout_view(request):
     logout(request)
     return render(request, 'appchat/index.html')
 
 
-# Декоратор метода отправки (name='dispatch'), для проверки авторизации пользователя (login_required)
+# Декоратор методу відправки (name='dispatch'), для перевірки автентифікації користувача (login_required)
 @method_decorator(login_required, name='dispatch')
 class GlobalRoom(DataMixin, ListView):
     model = ChatRoom
@@ -65,9 +65,9 @@ class GlobalRoom(DataMixin, ListView):
             page_obj = paginator.get_page(page_number)
             return page_obj
         except Exception as e:
-            # Обработка исключений
+            # Обробка винятків
             print(f"An error occurred: {str(e)}")
-            # Возвращение пустого QuerySet или другой логики обработки ошибок
+            # Повернення порожнього QuerySet або іншої логіки обробки помилок
             return ChatRoom.objects.none()
 
 
@@ -122,9 +122,9 @@ class ProfileAnotherUserView(DataMixin, DetailView):
         try:
             context['obj_another_user'] = UserProfile.objects.get(username=another_username)
         except ObjectDoesNotExist as e:
-            # Обработка ошибки отсутствия пользователя
+            # Обробка помилки відсутності користувача
             print(f"User with username {another_username} does not exist: {str(e)}")
-            # Возвращение ошибки или другая логика обработки ошибок
+            # Повернення помилки або іншої логіки обробки помилок
         return context
 
 
@@ -141,17 +141,16 @@ def add_friend(request, user_name, another_username):
         return redirect(path)
 
     except ObjectDoesNotExist:
-        # Обработка, если объект не существует
-        # Перенаправление на страницу ошибки
+        # Обробка, якщо об'єкт не існує
+        # Перенаправлення на сторінку помилки
         return render(request, 'error_page.html', {'error_message': 'User does not exist.'})
 
     except Exception as e:
-        # Общий обработчик ошибок
-        # Можно здесь записывать логи или принимать другие меры
+        # Загальний обробник помилок
+        # Можна тут записувати логи або приймати інші заходи
         print(f"An error occurred: {str(e)}")
-        # Перенаправление на страницу ошибки
+        # Перенаправлення на сторінку помилки
         return render(request, 'error_page.html', {'error_message': f"An error occurred: {str(e)}"})
-
 
 
 @method_decorator(login_required, name='dispatch')
@@ -167,7 +166,7 @@ class ChatRoomDetailView(DataMixin, DetailView):
     #     sender = request.user
     #
     #     if message and sender:
-    #         # Создание и возврат JSON-ответа с добавленным сообщением
+    #         # Створення та повернення JSON-відповіді з доданим повідомленням
     #         new_message = chat_room.add_message(sender, message)
     #         response_data = {
     #             'message': {
@@ -202,20 +201,20 @@ def create_chatRoom(request):
 
 
 @login_required
-@require_POST  # декоратор, который разрешает работу функции, в случае если она имеет POST-запрос
+@require_POST  # декоратор, який дозволяє працювати функції, у випадку якщо вона має POST-запит
 def join_the_room(request, room_slug):
     try:
         user = UserProfile.objects.get(username=request.user)
         room = ChatRoom.objects.get(slug=room_slug)
         user.join_chatroom(room)
     except UserProfile.DoesNotExist:
-        # Обработка отсутствия пользователя
+        # Обробка відсутності користувача
         return HttpResponse('User does not exist')
     except ChatRoom.DoesNotExist:
-        # Обработка отсутствия комнаты чата
+        # Обробка відсутності кімнати чату
         return HttpResponse('Chat room does not exist')
     except Exception as e:
-        # Обработка других ошибок
+        # Обробка інших помилок
         return HttpResponse(f'An error occurred: {str(e)}')
 
     return HttpResponseRedirect(reverse('chat_room', args=[room_slug]))
@@ -232,7 +231,7 @@ class NotificationsView(ListView):
             queryset = user.notifications.all()
             return queryset
         except Exception as e:
-            # Обработка ошибок получения уведомлений
+            # Обробка помилок отримання сповіщень
             return []
 
 
@@ -244,13 +243,13 @@ def delete_notification(request, notification_id):
         notification = Notification.objects.get(id=notification_id)
         user.notifications.remove(notification)
     except UserProfile.DoesNotExist:
-        # Обработка отсутствия пользователя
+        # Обробка відсутності користувача
         return HttpResponse('User does not exist')
     except Notification.DoesNotExist:
-        # Обработка отсутствия уведомления
+        # Обробка відсутності сповіщення
         return HttpResponse('Notification does not exist')
     except Exception as e:
-        # Обработка других ошибок
+        # Обробка інших помилок
         return HttpResponse(f'An error occurred: {str(e)}')
 
     return HttpResponseRedirect('/notifications/')
@@ -264,9 +263,9 @@ def leave_room(request, room_slug):
     user.leave_chatroom(chat_room)
     count_user = chat_room.user_count - 1
     if count_user <= 0:
-        # Удаляем все сообщения которые ассоциируются в этой чат-комнатой
+        # Видаляємо всі повідомлення, які асоціюються в цій чат-кімнаті
         chat_room.messages.all().delete()
-        # Удаляем запись из таблицы о комнате
+        # Видаляємо запис з таблиці про кімнату
         chat_room.delete()
     else:
         chat_room.user_count = count_user
@@ -276,7 +275,7 @@ def leave_room(request, room_slug):
     return redirect('profile', user_name=request.user.username)
 
 
-# Обработка 404, обязательно добавить ссылку на функцию в urls.py
+# Обробка 404, обов'язково додати посилання на функцію в urls.py
 def page_not_found(request, exception):
     context = {"error_message": exception}
     return render(request, 'appchat/error_page.html', context=context)

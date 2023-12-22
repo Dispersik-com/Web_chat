@@ -1,7 +1,6 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.db import database_sync_to_async
 
-
 class ChatConsumer(AsyncJsonWebsocketConsumer):
 
     @database_sync_to_async
@@ -18,27 +17,27 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         user = self.scope.get('user')
         if user and user.is_authenticated:
-            # print('Connect :', user.username)
-            # Пользователь аутентифицирован, разрешить подключение
+            # print('Connect:', user.username)
+            # Користувач автентифікований, дозволити підключення
             await self.accept()
 
-            # Получение параметров запроса, в данном случае slug комнаты
+            # Отримання параметрів запиту, у даному випадку slug кімнати
             self.room_slug = self.scope['url_route']['kwargs']['room_slug']
             self.room = await self.get_room(user)
 
             # print('Connect to room:', room)
-            # Присоединение к группе чата, используя slug комнаты
+            # Приєднання до групи чату за допомогою slug кімнати
             await self.channel_layer.group_add(
                 self.room_slug,
                 self.channel_name
             )
 
         else:
-            # Пользователь не аутентифицирован, закрыть соединение
+            # Користувач не автентифікований, закрити з'єднання
             await self.close()
 
     async def disconnect(self, close_code):
-        # Отключение клиента
+        # Відключення клієнта
         await self.channel_layer.group_discard(
             self.room_slug,
             self.channel_name
@@ -52,7 +51,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         add_message = await self.add_message(user, message)
 
         if add_message:
-            # Отправка сообщения в группу чата
+            # Відправка повідомлення в групу чату
             await self.channel_layer.group_send(
                 self.room_slug,
                 {
@@ -62,7 +61,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 }
             )
         else:
-            # Отправлять ошибку отправки
+            # Відправка помилки відправлення
             print('Sending error')
             pass
 
@@ -70,7 +69,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         message = event.get('message')
         sender = event.get('sender')
 
-        # Отправка сообщения клиенту
+        # Відправка повідомлення клієнту
         await self.send_json({
             'type': 'chat_message',
             'sender': sender,

@@ -31,7 +31,7 @@
     border-radius: 10px;
     box-shadow: 0px 0px 20px rgba(0, 200, 200, 0.9);
     overflow-y: scroll;
-    max-height: 400px; /* Выберите подходящую высоту для отображения окна прокрутки */
+    max-height: 400px;
 }
 
 #room-list {

@@ -14,7 +14,7 @@
       <div class="notification-info">
         <p><strong>From:</strong> {{ notification.user }}</p>
         <p><strong>Date:</strong> {{ notification.timestamp }}</p>
-        <p class="expandable"><strong>Message:</strong> {{ notification.message }}</p>  <!-- Добавлен класс "expandable" -->
+        <p class="expandable"><strong>Message:</strong> {{ notification.message }}</p>
       </div>
       <div class="notification-actions">
         <a href="{% url 'chat_room' notification.link %}">Enter Room</a>
@@ -29,7 +29,7 @@
 </div>
 
 <script>
-  // Обработчик события для разворачивания/сворачивания текста при клике
+  // Обробник події для розгортання/згортання тексту при кліку
   const expandableElements = document.querySelectorAll('.expandable');
   expandableElements.forEach(element => {
     element.addEventListener('click', () => {

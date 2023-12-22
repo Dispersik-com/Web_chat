@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 
 
-# Класс для выполнения кода перед вызовом каждой функции представления
+# Клас для виконання коду перед викликом кожної функції представлення
 # class MiddlewareClass:
 #     def __init__(self, get_response):
 #         self.get_response = get_response

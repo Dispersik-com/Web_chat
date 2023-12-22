@@ -7,49 +7,26 @@ from django.urls import reverse
 from pytils.translit import slugify
 
 
-# Create your models here.
-"""
-AbstractBaseUser - Этот класс предоставляет абстрактную реализацию модели пользователя 
-и определяет минимальный набор функций, необходимых для работы с системой аутентификации. 
-Он служит основой для создания пользовательской модели, заменяя стандартную модель пользователя Django. 
-В коде, класс UserProfile наследуется от AbstractBaseUser, чтобы определить пользовательскую модель.
-
-PermissionsMixin - Этот класс добавляет поле и методы, связанные с разрешениями и правами доступа, 
-к модели пользователя. 
-Он предоставляет удобные методы для проверки разрешений пользователя, 
-определения его статуса администратора и других связанных функций. 
-В коде, класс UserProfile наследуется от PermissionsMixin, 
-чтобы добавить разрешения и функции управления доступом к пользовательской модели.
-
-BaseUserManager - Этот класс предоставляет базовую функциональность для создания, 
-изменения и удаления пользователей. 
-Он содержит методы для создания обычных пользователей и суперпользователей. 
-Менеджер модели пользователя, в данном случае UserProfileManager, 
-наследуется от BaseUserManager для определения специфичной логики создания и управления пользователями.
-
-"""
-
-
 class UserProfileManager(BaseUserManager):
     def create_user(self, username, password=None, **extra_fields):
-        # Проверяем, предоставлено ли имя пользователя
+        # Перевіряємо, чи надано ім'я користувача
         if not username:
-            raise ValueError('The Username field must be set')
-        # Создаем новый экземпляр пользователя с предоставленным именем пользователя и любыми дополнительными полями
+            raise ValueError('Поле імені користувача повинно бути заповненим')
+        # Створюємо новий екземпляр користувача з наданим ім'ям користувача та будь-якими додатковими полями
         user = self.model(username=username, **extra_fields)
-        # Устанавливаем пароль пользователя
+        # Встановлюємо пароль користувача
         user.set_password(password)
-        # Сохраняем объект пользователя в базе данных
+        # Зберігаємо об'єкт користувача у базі даних
         user.save(using=self._db)
-        # Возвращаем созданного пользователя
+        # Повертаємо створеного користувача
         return user
 
     def create_superuser(self, username, password=None, **extra_fields):
-        # По умолчанию устанавливаем значения полей 'is_staff' и 'is_superuser' в True в словаре extra_fields
+        # За замовчуванням встановлюємо значення полів 'is_staff' і 'is_superuser' в True у словнику extra_fields
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        # Создаем суперпользователя, используя метод create_user
-        # с предоставленным именем пользователя, паролем и дополнительными полями
+        # Створюємо суперкористувача, використовуючи метод create_user
+        # з наданим ім'ям користувача, паролем і додатковими полями
         return self.create_user(username, password, **extra_fields)
 
 
@@ -68,12 +45,12 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
-    # Создание экземпляра UserProfileManager для управления профилями пользователей
+    # Створення екземпляра UserProfileManager для управління профілями користувачів
     objects = UserProfileManager()
 
-    # Указание поля имени пользователя, используемого в качестве уникального идентификатора для аутентификации
+    # Вказання поля імені користувача, що використовується як унікальний ідентифікатор для аутентифікації
     USERNAME_FIELD = 'username'
-    # Указание обязательных полей для создания профиля пользователя
+    # Вказання обов'язкових полів для створення профілю користувача
     REQUIRED_FIELDS = ['email']
 
     def get_friends(self):
@@ -157,7 +134,7 @@ class ChatRoom(models.Model):
             slug = slugify(name)
             slug_suffix = hash(datetime.datetime.now().isoformat())
             slug = f"{slug}_{slug_suffix}"
-            # Создаем объект комнаты чата
+            # Створюємо об'єкт кімнати чату
             chat_room = cls(name=name, slug=slug, user_count=0, is_private=private)
             chat_room.save()
             return chat_room

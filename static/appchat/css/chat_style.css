@@ -101,7 +101,7 @@
   border-radius: 5px;
   margin-bottom: 2px;
   width: 600px;
-  max-height: 500px; /* Добавлено свойство max-height */
+  max-height: 500px;
   resize: none;
 }
 

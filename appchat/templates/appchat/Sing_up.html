@@ -4,7 +4,7 @@
   <head>
     <link rel="stylesheet" type="text/css" href="{% static 'appchat/css/forms_style.css' %}">
     <meta charset="UTF-8">
-    <title>Регистрация</title>
+    <title>Реєстрація</title>
   </head>
   <body>
   <div class="form-container">
@@ -13,7 +13,7 @@
     </div>
     <form method="POST">
       {% csrf_token %}
-      <h1>Регистрация</h1>
+      <title>Реєстрація</title>
       {{ form.as_p }}
       <input type="submit" value="Зарегистрироваться">
     </form>
